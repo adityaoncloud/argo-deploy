@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argo-deployment
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: argo-deployment
+  template:
+    metadata:
+      labels:
+        app: argo-deployment
+    spec:
+      containers:
+      - image: aditya252003/todo
+        name: todo-app
+        ports:
+        - containerPort: 8000
