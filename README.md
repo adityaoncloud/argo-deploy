@@ -1,6 +1,8 @@
 # Exploring Gitops using ArgoCD
 This repository contains the complete guide for deploying a web-app using Argocd on a Kubernetes cluster on a linux machine
 
+Application I have used as an example https://github.com/adityaoncloud/django-todo
+
 
 ### Setup
 First make sure you have Docker installed on your local machine.
