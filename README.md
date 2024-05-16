@@ -75,6 +75,43 @@ kubectl create namespace argo-rollouts
 kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
 ```
 
+## Implementing argo-rollouts
+
+Make sure you argo-rollouts installed then get kubectl with argo-rollouts plugin installed using
+
+```bash
+curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
+chmod +x ./kubectl-argo-rollouts-linux-amd64
+sudo mv ./kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
+```
+
+Create a rollout specification deployment and yaml file.
+Follow the official docs https://argoproj.github.io/argo-rollouts/getting-started/
+
+Then run the command to deploy the initial rollout and service
+
+```bash
+kubectl apply -f <your github repo id path to rollout.yaml file>
+kubectl apply -f <your github repo id path to service.yaml file>
+```
+
+Performing the update
+
+```bash
+kubectl argo rollouts set image <app name> \
+  <name>=<updated image version>
+
+# example command
+kubectl argo rollouts set image rollouts-demo \
+  rollouts-demo=argoproj/rollouts-demo:yellow
+```
+
+Monitoring the resources
+
+```bash
+kubectl argo rollouts get rollout <name> --watch
+```
+
 ## Clearing the resources 
 
 ### Deleting the app deployed on kubernetes using argocd
