@@ -12,12 +12,12 @@ Create a virtual kubernetes cluster. This documentation includes creating one us
 ```bash
 # install kind on linux
 
-$ [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.23.0/kind-linux-amd64
-$ chmod +x ./kind
-$ sudo mv ./kind /usr/local/bin/kind
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.23.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
 
 # create a kind cluster
-$ kind create cluster
+kind create cluster
 ```
 for any difficulties follow the official documentation
 https://kind.sigs.k8s.io/docs/user/quick-start/
@@ -26,33 +26,34 @@ https://kind.sigs.k8s.io/docs/user/quick-start/
 once you have a kubernetes cluster running install kubectl to interact with the cluster
 
 ```bash
-$ sudo snap install kubectl --classic
+sudo snap install kubectl --classic
 ```
 
 ### Step 3 
 installing argocd on your kubernetes cluster
+Official Documentation https://argo-cd.readthedocs.io/en/stable/getting_started/
 
 ```bash
-$ kubectl create namespace argocd
-$ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 installing argocd cli 
 
 ```bash
-$ curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-$ sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
-$ rm argocd-linux-amd64
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+rm argocd-linux-amd64
 
 Change the argocd-server service type to LoadBalancer
 
 ```bash 
-$ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 ```
 
 Kubectl port-forwarding can also be used to connect to the API server without exposing the service.
 
 ```bash 
-$ kubectl port-forward svc/argocd-server -n argocd 8080:443
+kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
 you can now access API-server at https://localhost:8080
@@ -61,16 +62,56 @@ for login credentials
 Username: admin
 for password type in the following command to access
 ```bash
-$ argocd admin initial-password -n argocd
+argocd admin initial-password -n argocd
 ```
+
+
 ### Step 4 
 
 setting up argocd rollouts
 
 ```bash 
-$ kubectl create namespace argo-rollouts
-$ kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
 ```
+
+## Clearing the resources 
+
+### Deleting the app deployed on kubernetes using argocd
+you can delete the app deployed on the cluster simply using the ui provided by argocd or using argocd cli.
+For more info https://argo-cd.readthedocs.io/en/stable
+
+### Deleting the argocd deployment using kubectl
+
+You can delete the namespace argocd created while deploying argocd which will in-turn delete all the resources(pods,services, deployments) associated with it, deleting the argocd deployments
+
+```bash
+kubectl delete namespace argocd
+```
+
+### Deleting the argo-rollouts extension.
+
+```bash
+kubectl delete namespace argo-rollouts
+```
+
+## Challenges you may face 
+
+Installing kind doesn't work as directed alternative I found was using GO. Installing kind using go is simple and straightforward
+
+Install go https://go.dev/doc/install
+
+Then type in 
+```bash
+go install sigs.k8s.io/kind@v0.23.0
+```
+
+
+
+
+
+
+
 
 
 
